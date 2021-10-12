@@ -8,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 
 @PersistenceContext
 public class Application {
@@ -26,29 +27,49 @@ public class Application {
         return employees;
     }
 
-    public static List<Project> query2() {
-        EntityManager em = getEntityManager();
-        List<Project> employees = (List<Project>) em.createQuery("select p from Project p where p.name = 'electricity'").getResultList();
-        System.out.println("Executing query 2...........");
-        employees.forEach(
-                System.out::println
-        );
-        return employees;
+    public static Set<Employee> query2(String projectName) {
+        try {
+            EntityManager em = getEntityManager();
+            Project project = (Project) em.createQuery("select p from Project p where p.name = ?1")
+                    .setParameter(1, projectName)
+                    .getSingleResult();
+            System.out.println("Executing query 2...........");
+            Set<Employee> employees = project.getEmployeeProjects();
+            for (Employee e : employees) {
+                System.out.println("Employee: " + e.getName() + " has email: " + e.getEmail() + " and ID: " + e.getId());
+            }
+            return employees;
+        } catch (Exception e) {
+            System.out.println("Error fetching employees");
+            return null;
+        }
     }
 
-//    public static List<Project> query3() {
-//        EntityManager em = getEntityManager();
-//        List<Project> employees = (List<Project>) em.createQuery(" ").getResultList();
-//        System.out.println("Executing query 3...........");
-//        employees.forEach(
-//                System.out::println
-//        );
-//        return employees;
-//    }
+    public static void query3(int employeeId, int projectId) {
+        try {
+            EntityManager em = getEntityManager();
+            em.getTransaction().begin();
+            Employee employee = (Employee) em.createQuery("SELECT e FROM Employee e WHERE e.id = ?1")
+                    .setParameter(1, employeeId)
+                    .getSingleResult();
+            Project project = (Project) em.createQuery("SELECT p FROM Project p WHERE p.id = ?1")
+                    .setParameter(1, projectId)
+                    .getSingleResult();
+            employee.getEmployeeProjects().add(project);
+            em.persist(employee);
+            em.getTransaction().commit();
+            System.out.println("Executing query 3...........");
+            System.out.println("Successfully added ProjectID to Employee");
+        } catch (Exception e) {
+            System.out.println("Failed to add Project to Employee");
+        }
+    }
 
-    public static List<Employee> query4() {
+    public static List<Employee> query4(String role) {
         EntityManager em = getEntityManager();
-        List<Employee> employees = (List<Employee>) em.createQuery("select e from Employee e where e.rolee = 'hr' and e.employeeProjects.size = 0").getResultList();
+        List<Employee> employees = (List<Employee>) em.createQuery("select e from Employee e where e.rolee = ?1 and e.employeeProjects.size = 0")
+                .setParameter(1, role)
+                .getResultList();
         System.out.println("Executing query 4...........");
         employees.forEach(
                 System.out::println
@@ -57,7 +78,7 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        query2();
+        query2("electricity");
 //        getEntityManager();
     }
 }

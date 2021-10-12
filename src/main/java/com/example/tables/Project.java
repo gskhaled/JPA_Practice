@@ -23,8 +23,20 @@ public class Project {
     @JoinColumn(name = "project_manager", referencedColumnName = "id")
     private Employee projectManager;
 
+    public Set<Employee> getEmployeeProjects() {
+        return employeeProjects;
+    }
+
+    public void setEmployeeProjects(Set<Employee> employeeProjects) {
+        this.employeeProjects = employeeProjects;
+    }
+
     @ManyToMany(mappedBy = "employeeProjects", cascade = CascadeType.ALL)
     private Set<Employee> employeeProjects = new HashSet<Employee>();
+
+    public void setProjectManager(Employee projectManager) {
+        this.projectManager = projectManager;
+    }
 
     public Employee getProjectManager() {
         return projectManager;
