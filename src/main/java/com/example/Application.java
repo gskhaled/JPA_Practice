@@ -5,11 +5,9 @@ import com.example.tables.Project;
 import com.example.tables.Role;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
@@ -140,8 +138,35 @@ public class Application {
         return jsonString;
     }
 
+    public static String query1Paginated(String data) {
+        JSONObject json = new JSONObject(data);
+        int pageIndex = json.getInt("pageIndex");
+        int pageSize = json.getInt("pageSize");
+
+        EntityManager em = getEntityManager();
+        System.out.println("Executing query 1...........");
+        Query query = em.createQuery("SELECT e FROM Employee e");
+        query.setFirstResult((pageIndex - 1) * pageSize);
+        query.setMaxResults(pageSize);
+        List<Employee> employees = query.getResultList();
+
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = "";
+        try {
+            jsonString = mapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(employees);
+            System.out.println(jsonString);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        return jsonString;
+    }
+
     public static void main(String[] args) {
 //        query2JSON("electricity");
 //        query4JSON("hr");
+//        query1Paginated(String.format("{\"pageIndex\":\"%s\",\"pageSize\":\"%s\"}",
+//                55, 1));
     }
 }

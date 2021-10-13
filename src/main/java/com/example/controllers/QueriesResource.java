@@ -2,9 +2,8 @@ package com.example.controllers;
 
 import com.example.Application;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/query")
@@ -39,5 +38,12 @@ public class QueriesResource {
     public Response doquery4(@PathParam("role") String role) {
         System.out.println("In query 4");
         return Response.ok(Application.query4JSON(role)).build();
+    }
+
+    @POST
+    @Path("/page")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String createCustomer(String data) {
+        return Application.query1Paginated(data);
     }
 }
