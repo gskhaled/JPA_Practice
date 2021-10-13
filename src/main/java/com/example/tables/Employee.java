@@ -1,9 +1,15 @@
 package com.example.tables;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 @Table(name = "employees")
 @Entity
 public class Employee {
@@ -27,11 +33,11 @@ public class Employee {
     @Column(name = "nationalID", nullable = false, length = 14)
     private String nationalID;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "rolee")
     private Role rolee;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "employeeprojects",
             joinColumns = @JoinColumn(name = "project"),

@@ -40,21 +40,17 @@
             <artifactId>jaxrs-ri</artifactId>
             <version>2.29</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.jboss.resteasy</groupId>-->
-        <!--            <artifactId>resteasy-jaxrs</artifactId>-->
-        <!--            <version>3.0.10.Final</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.jboss.resteasy</groupId>-->
-        <!--            <artifactId>resteasy-servlet-initializer</artifactId>-->
-        <!--            <version>3.0.10.Final</version>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.jboss.resteasy</groupId>-->
-        <!--            <artifactId>resteasy-client</artifactId>-->
-        <!--            <version>3.0.10.Final</version>-->
-        <!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.13.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
