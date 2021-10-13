@@ -72,8 +72,8 @@ public class Project {
                 "id=" + id +
                 ", startDate=" + startDate +
                 ", name='" + name + '\'' +
-                ", projectManager=" + '\n' + projectManager + '\n' +
-                ", employeeProjects=" + employeeProjects.size() +
+                ", projectManager=" + projectManager.getName() +
+                ", employeeProjects size=" + employeeProjects.size() +
                 '}';
     }
 }

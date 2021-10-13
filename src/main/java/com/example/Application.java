@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.tables.Employee;
 import com.example.tables.Project;
+import com.example.tables.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -45,7 +46,7 @@ public class Application {
         }
     }
 
-    public static void query3(int employeeId, int projectId) {
+    public static String query3(int employeeId, int projectId) {
         try {
             EntityManager em = getEntityManager();
             em.getTransaction().begin();
@@ -60,15 +61,18 @@ public class Application {
             em.getTransaction().commit();
             System.out.println("Executing query 3...........");
             System.out.println("Successfully added ProjectID to Employee");
+            return "Successfully added ProjectID to Employee";
         } catch (Exception e) {
             System.out.println("Failed to add Project to Employee");
+            return "Failed to add Project to Employee";
         }
     }
 
     public static List<Employee> query4(String role) {
         EntityManager em = getEntityManager();
+        Role rolee = new Role(role);
         List<Employee> employees = (List<Employee>) em.createQuery("select e from Employee e where e.rolee = ?1 and e.employeeProjects.size = 0")
-                .setParameter(1, role)
+                .setParameter(1, rolee)
                 .getResultList();
         System.out.println("Executing query 4...........");
         employees.forEach(
@@ -78,7 +82,8 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        query2("electricity");
-//        getEntityManager();
+//        query2("electricity");
+//        query1();
+        query4("hr");
     }
 }
