@@ -1,4 +1,4 @@
-package com.example;
+package com.example.services;
 
 import com.example.tables.Employee;
 import com.example.tables.Project;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @PersistenceContext
-public class Application {
+public class QueryService {
     public static EntityManager getEntityManager() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("my-persistence-unit");
         return emf.createEntityManager();
@@ -164,7 +164,7 @@ public class Application {
     }
 
     public static void main(String[] args) {
-//        query2JSON("electricity");
+        query2JSON("electricity");
 //        query4JSON("hr");
 //        query1Paginated(String.format("{\"pageIndex\":\"%s\",\"pageSize\":\"%s\"}",
 //                55, 1));
