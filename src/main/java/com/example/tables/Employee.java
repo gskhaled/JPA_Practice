@@ -118,4 +118,19 @@ public class Employee {
                 ", employeeProjects=" + employeeProjects +
                 '}';
     }
+
+    public Employee(Integer id, String name, String email, String phoneNumber, short age, String nationalID, Role rolee, Set<Project> employeeProjects) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.age = age;
+        this.nationalID = nationalID;
+        this.rolee = rolee;
+        this.employeeProjects = employeeProjects;
+    }
+
+    public Employee() {
+
+    }
 }

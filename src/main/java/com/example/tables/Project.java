@@ -82,4 +82,16 @@ public class Project {
                 ", employeeProjects size=" + employeeProjects.size() +
                 '}';
     }
+
+    public Project(Integer id, LocalDate startDate, String name, Employee projectManager, Set<Employee> employeeProjects) {
+        this.id = id;
+        this.startDate = startDate;
+        this.name = name;
+        this.projectManager = projectManager;
+        this.employeeProjects = employeeProjects;
+    }
+
+    public Project() {
+
+    }
 }
