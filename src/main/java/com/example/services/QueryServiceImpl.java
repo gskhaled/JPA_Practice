@@ -15,6 +15,15 @@ import java.util.List;
 import java.util.Set;
 
 public class QueryServiceImpl implements QueryService {
+    public EntityManager em = getEntityManager();
+
+    public static void main(String[] args) {
+//        query1Paginated(String.format("{\"pageIndex\":\"%s\",\"pageSize\":\"%s\"}",
+//                55, 1));
+//        new QueryServiceImpl().query1JSON();
+        new QueryServiceImpl().query4JSON("hr");
+    }
+
     public EntityManager getEntityManager() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("my-persistence-unit");
         return emf.createEntityManager();
@@ -30,25 +39,6 @@ public class QueryServiceImpl implements QueryService {
 //        );
 //        return employees;
 //    }
-
-    public String query1JSON() {
-        QueryServiceImpl queryService = new QueryServiceImpl();
-        EntityManager em = queryService.getEntityManager();
-        List<Employee> employees = (List<Employee>) em.createQuery("SELECT e FROM Employee e").getResultList();
-        System.out.println("Executing query 1...........");
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonString = "";
-        try {
-            mapper.findAndRegisterModules();
-            jsonString = mapper
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(employees);
-            System.out.println(jsonString);
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
-        }
-        return jsonString;
-    }
 
 //    public static Set<Employee> query2(String projectName) {
 //        try {
@@ -69,11 +59,27 @@ public class QueryServiceImpl implements QueryService {
 //        }
 //    }
 
+    public String query1JSON() {
+//        EntityManager em = getEntityManager();
+        List<Employee> employees = (List<Employee>) em.createQuery("SELECT e FROM Employee e").getResultList();
+        System.out.println("Executing query 1...........");
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonString = "";
+        try {
+            mapper.findAndRegisterModules();
+            jsonString = mapper
+                    .writerWithDefaultPrettyPrinter()
+                    .writeValueAsString(employees);
+            System.out.println(jsonString);
+        } catch (JsonProcessingException ex) {
+            ex.printStackTrace();
+        }
+        return jsonString;
+    }
+
     public String query2JSON(String projectName) {
         String jsonString = "";
         try {
-            QueryServiceImpl queryService = new QueryServiceImpl();
-            EntityManager em = queryService.getEntityManager();
             Project project = (Project) em.createQuery("select p from Project p where p.name = ?1")
                     .setParameter(1, projectName)
                     .getSingleResult();
@@ -86,32 +92,10 @@ public class QueryServiceImpl implements QueryService {
                     .writeValueAsString(employees);
             System.out.println(jsonString);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error fetching employees");
         }
         return jsonString;
-    }
-
-    public String query3(int employeeId, int projectId) {
-        try {
-            QueryServiceImpl queryService = new QueryServiceImpl();
-            EntityManager em = queryService.getEntityManager();
-            em.getTransaction().begin();
-            Employee employee = (Employee) em.createQuery("SELECT e FROM Employee e WHERE e.id = ?1")
-                    .setParameter(1, employeeId)
-                    .getSingleResult();
-            Project project = (Project) em.createQuery("SELECT p FROM Project p WHERE p.id = ?1")
-                    .setParameter(1, projectId)
-                    .getSingleResult();
-            employee.getEmployeeProjects().add(project);
-            em.persist(employee);
-            em.getTransaction().commit();
-            System.out.println("Executing query 3...........");
-            System.out.println("Successfully added ProjectID to Employee");
-            return "Successfully added ProjectID to Employee";
-        } catch (Exception e) {
-            System.out.println("Failed to add Project to Employee");
-            return "Failed to add Project to Employee";
-        }
     }
 
 //    public static List<Employee> query4(String role) {
@@ -128,9 +112,29 @@ public class QueryServiceImpl implements QueryService {
 //        return employees;
 //    }
 
+    public String query3(int employeeId, int projectId) {
+        try {
+            em.getTransaction().begin();
+            Project project = (Project) em.createQuery("SELECT p FROM Project p WHERE p.id = ?1")
+                    .setParameter(1, projectId)
+                    .getSingleResult();
+            Employee employee = (Employee) em.createQuery("SELECT e FROM Employee e WHERE e.id = ?1")
+                    .setParameter(1, employeeId)
+                    .getSingleResult();
+            employee.getEmployeeProjects().add(project);
+            em.persist(employee);
+            em.getTransaction().commit();
+            System.out.println("Executing query 3...........");
+            System.out.println("Successfully added ProjectID to Employee");
+            return "Successfully added ProjectID to Employee";
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Failed to add Project to Employee");
+            return "Failed to add Project to Employee";
+        }
+    }
+
     public String query4JSON(String role) {
-        QueryServiceImpl queryService = new QueryServiceImpl();
-        EntityManager em = queryService.getEntityManager();
         Role rolee = new Role(role);
         List<Employee> employees = (List<Employee>) em.createQuery("select e from Employee e where e.rolee = ?1 and e.employeeProjects.size = 0")
                 .setParameter(1, rolee)
@@ -155,8 +159,6 @@ public class QueryServiceImpl implements QueryService {
         int pageIndex = json.getInt("pageIndex");
         int pageSize = json.getInt("pageSize");
 
-        QueryServiceImpl queryService = new QueryServiceImpl();
-        EntityManager em = queryService.getEntityManager();
         System.out.println("Executing query 1...........");
         Query query = em.createQuery("SELECT e FROM Employee e");
         query.setFirstResult((pageIndex - 1) * pageSize);
@@ -175,11 +177,5 @@ public class QueryServiceImpl implements QueryService {
             ex.printStackTrace();
         }
         return jsonString;
-    }
-
-    public static void main(String[] args) {
-//        query1Paginated(String.format("{\"pageIndex\":\"%s\",\"pageSize\":\"%s\"}",
-//                55, 1));
-        new QueryServiceImpl().query1JSON();
     }
 }
